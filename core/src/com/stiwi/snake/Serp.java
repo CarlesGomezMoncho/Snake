@@ -47,7 +47,7 @@ public class Serp {
         cos.add(new PartSerp(cap.getX(), cap.getY()));
 
         //afegim la cua
-        cua = new CuaSerp(0,0);
+        cua = new CuaSerp(cap.getX(), cap.getY());
 
         //no afegim cap part nova a la serp de inici
         afegirPart = 0;
@@ -77,7 +77,7 @@ public class Serp {
         cos.add(new PartSerp(cap.getX(), cap.getY()));
 
         //afegim la cua
-        cua = new CuaSerp(0,0);
+        cua = new CuaSerp(cap.getX(), cap.getY());
 
         //no afegim cap part nova a la serp de inici
         afegirPart = 0;
@@ -126,19 +126,26 @@ public class Serp {
     public void mou()
     {
 
-        //de darrere cap a avant moguem la serp (s
-        for ( int i = cos.size()-1  ; i>=0; i--) {
+        //de darrere cap a avant moguem la serp (comprovem dins també la cua, per això no esta posat com a cos.size()-1)
+        for ( int i = cos.size()  ; i>=0; i--) {
 
-            //agafem un fragment del cos
-            PartSerp part = cos.get(i);
+            PartSerp part;
 
-            //si i es l'ultim
+            //si es l'ultim, agafem la cua
+            if (i == cos.size())
+                part = cua;
+            else
+                //si no agafem un fragment del cos
+                part = cos.get(i);
 
             //agafem el anterior
             PartSerp partAnterior;
-            //si i es 0, el cap es el anterior, sinó sera el del array[i-1]
+
+            //si i es 0, el cap es el anterior, si i es el tamany, serà la cua, sinó sera el del array[i-1]
             if (i == 0)
                 partAnterior = cap;
+            else if (i == cos.size())
+                partAnterior = cos.get(cos.size()-1);
             else
                 partAnterior = cos.get(i-1);
 
@@ -200,18 +207,26 @@ public class Serp {
                     }
             }
 
-            //finalment moguem la part si no es 0
+            //finalment moguem la part si no es 0 i rotem si es cua
             switch (part.getDireccio()) {
                 case 1:
+                    if (i == cos.size())
+                        cua.setRotation(0);
                     part.setX(part.getX() + velocitat);
                     break;
                 case 2:
+                    if (i == cos.size())
+                        cua.setRotation(-90);
                     part.setY(part.getY() - velocitat);
                     break;
                 case 3:
+                    if (i == cos.size())
+                        cua.setRotation(180);
                     part.setX(part.getX() - velocitat);
                     break;
                 case 4:
+                    if (i == cos.size())
+                        cua.setRotation(90);
                     part.setY(part.getY() + velocitat);
                     break;
             }
@@ -358,18 +373,6 @@ public class Serp {
         //creem una nova part amb les mateixes característiques del ultim
         PartSerp nou = new PartSerp(ultimaPart.getX(), ultimaPart.getY());
 
-        //copiem les característiques finals del ultim si s'està moguent quan s'afegeix
-
-
-        //nou.setXant(ultimaPart.getXant());
-        //nou.setYant(ultimaPart.getYant());
-
-
-        //if (ultimaPart.isDireccioDiferent()) {
-        //    nou.setDireccioAnt(ultimaPart.getDireccioAnt());  //la direccio actual ha de ser 0
-        //}
-        //nou.setColor(new com.badlogic.gdx.graphics.Color(1f, 0.5f, 0.5f, 1));
-
         //afegim la nova part
         cos.add(nou);
 
@@ -381,6 +384,14 @@ public class Serp {
 
     public void setCap(CapSerp cap) {
         this.cap = cap;
+    }
+
+    public CuaSerp getCua() {
+        return cua;
+    }
+
+    public void setCua(CuaSerp cua) {
+        this.cua = cua;
     }
 
     public ArrayList<PartSerp> getCos() {

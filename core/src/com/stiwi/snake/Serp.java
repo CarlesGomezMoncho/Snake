@@ -16,7 +16,8 @@ import java.util.ArrayList;
 
 public class Serp {
 
-    private PartSerp cap;
+    private CapSerp cap;
+    private CuaSerp cua;
     private ArrayList<PartSerp> cos; //distints segments del cos de la serp
     private ArrayList<Integer> direccions; //guardem els canvis de direccio pendents
     private int direccio;   //1,2,3,4 -> dreta, baix, esquerra, dalt, esta es la direcció actual
@@ -31,7 +32,7 @@ public class Serp {
         velocitat = 1;
 
         //afegim cap de la serp
-        cap = new PartSerp(0, 0);
+        cap = new CapSerp(0, 0);
         cap.setDireccio(direccio);
 
         //inicialitzem array de direccions
@@ -44,6 +45,9 @@ public class Serp {
         cos.add(new PartSerp(cap.getX(), cap.getY()));
         cos.add(new PartSerp(cap.getX(), cap.getY()));
         cos.add(new PartSerp(cap.getX(), cap.getY()));
+
+        //afegim la cua
+        cua = new CuaSerp(0,0);
 
         //no afegim cap part nova a la serp de inici
         afegirPart = 0;
@@ -58,7 +62,7 @@ public class Serp {
         velocitat = 1;
 
         //afegim cap de la serp
-        cap = new PartSerp(x, y);
+        cap = new CapSerp(x, y);
         cap.setDireccio(direccio);
 
         //inicialitzem array de direccions
@@ -71,6 +75,9 @@ public class Serp {
         cos.add(new PartSerp(cap.getX(), cap.getY()));
         cos.add(new PartSerp(cap.getX(), cap.getY()));
         cos.add(new PartSerp(cap.getX(), cap.getY()));
+
+        //afegim la cua
+        cua = new CuaSerp(0,0);
 
         //no afegim cap part nova a la serp de inici
         afegirPart = 0;
@@ -119,11 +126,13 @@ public class Serp {
     public void mou()
     {
 
-        //de darrere cap a avant moguem la serp
-        for (int i = cos.size()-1; i>=0; i--) {
+        //de darrere cap a avant moguem la serp (s
+        for ( int i = cos.size()-1  ; i>=0; i--) {
 
             //agafem un fragment del cos
             PartSerp part = cos.get(i);
+
+            //si i es l'ultim
 
             //agafem el anterior
             PartSerp partAnterior;
@@ -208,16 +217,20 @@ public class Serp {
             }
         }
 
-        //moguem el cap
+        //moguem el cap i ajustem la rotació del sprite del cap
         switch (cap.getDireccio())
         {
             case 1: setX(cap.getX()+velocitat);
+                cap.setRotation(180);
                 break;
             case 2: setY(cap.getY()-velocitat);
+                cap.setRotation(90);
                 break;
             case 3: setX(cap.getX()-velocitat);
+                cap.setRotation(0);
                 break;
             case 4: setY(cap.getY()+velocitat);
+                cap.setRotation(-90);
                 break;
         }
 
@@ -362,11 +375,11 @@ public class Serp {
 
     }
 
-    public PartSerp getCap() {
+    public CapSerp getCap() {
         return cap;
     }
 
-    public void setCap(PartSerp cap) {
+    public void setCap(CapSerp cap) {
         this.cap = cap;
     }
 
@@ -414,7 +427,7 @@ public class Serp {
         FileHandle saveFile = Gdx.files.local("saveFile");
         Json json = new Json();
 
-        cap = json.fromJson(PartSerp.class, saveFile.readString());
+        cap = json.fromJson(CapSerp.class, saveFile.readString());
         cos = json.fromJson(ArrayList.class, saveFile.readString());
 
     }

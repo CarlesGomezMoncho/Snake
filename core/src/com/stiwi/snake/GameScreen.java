@@ -45,7 +45,7 @@ public class GameScreen implements Screen {
     private TextButton resumeButton;
     private TextButton saveButton;
     private Label titolLabel;
-    private Texture fonsMenu, fons, serpTexture;
+    private Texture fonsMenu, fons, serpTexture, capSerpTexture, cuaSerpTexture;
     private ShapeRenderer shapeRenderer;
     private boolean loadGame;
 
@@ -61,6 +61,8 @@ public class GameScreen implements Screen {
         serp = new Serp(game.widthScreen/2, game.heightScreen/2);
         //asignem textura de la serp
         serpTexture = new Texture(Gdx.files.internal("snake_texture.png"));
+        capSerpTexture = new Texture(Gdx.files.internal("capserp.png"));
+        cuaSerpTexture = new Texture(Gdx.files.internal("cuaserp.png"));
 
         setComestible();
 
@@ -212,12 +214,13 @@ public class GameScreen implements Screen {
 
         //serp
         //cap de la serp
-        game.batch.draw(serpTexture, serp.getCap().getX(), serp.getCap().getY());
+        game.batch.draw(capSerpTexture, serp.getCap().getX(), serp.getCap().getY(), serp.getCap().getWidth()/2, serp.getCap().getHeight()/2, serp.getCap().getWidth(), serp.getCap().getHeight(), 1, 1, serp.getCap().getRotation(), 0, 0, 10, 10, false, false);
         //resta de la serp
         for (PartSerp part: serp.getCos()) {
             game.batch.draw(serpTexture, part.getX(), part.getY());
         }
 
+        //game.batch.draw(cuaSerpTexture, serp.getCua().getX(), serp.getCua().getY(), serp.getCua().getWidth()/2, serp.getCua().getHeight()/2, serp.getCua().getWidth(), serp.getCua().getHeight(), 1, 1, serp.getCua().getRotation(), 0, 0, 10, 10, false, false);
         //comestible
         game.batch.draw(serpTexture, comestible.getX(), comestible.getY());
         /*game.font.draw(game.batch, "x: "+serp.getX(), 20, 20);

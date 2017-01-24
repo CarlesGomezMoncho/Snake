@@ -3,6 +3,7 @@ package com.stiwi.snake;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -30,12 +31,15 @@ public class MenuScreen implements Screen {
 
     private Table table;
     private TextButton startButton, optionsButton, resumeButton;
+    private Texture fonsMenu;
 
     public MenuScreen (final Snake game)
     {
         this.game = game;
 
         //batch = game.batch;
+        fonsMenu =  new Texture(Gdx.files.internal("congruent_outline.png"));    //imatge de fons del menú
+        fonsMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);   //posem la imatge com a patró
 
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage();
@@ -87,7 +91,8 @@ public class MenuScreen implements Screen {
         optionsButton.addListener(new ClickListener(){
             @Override
             public void clicked(InputEvent event, float x, float y){
-                optionsButton.setText("Boto apretat");
+                game.setScreen(new OptionsScreen(game));
+                dispose();
             }
         });
 
@@ -111,9 +116,12 @@ public class MenuScreen implements Screen {
         Gdx.gl.glClearColor( 0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        game.batch.begin();
+        game.batch.draw(fonsMenu, 0, 0, 0, 0, (int)stage.getWidth(), (int)stage.getHeight());
+        game.batch.end();
+
         stage.act(Gdx.graphics.getDeltaTime());
         stage.draw();
-
 
     }
 

@@ -1,6 +1,7 @@
 package com.stiwi.snake;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.utils.Json;
@@ -29,7 +30,7 @@ public class Serp {
         //constructor buit per a guardar en json
         //direcció i velocitats inicials
         direccio = 1;
-        velocitat = 1;
+        velocitat = 3;
 
         //afegim cap de la serp
         cap = new CapSerp(0, 0);
@@ -59,7 +60,7 @@ public class Serp {
 
         //direcció i velocitats inicials
         direccio = 1;
-        velocitat = 1;
+        velocitat = 3;
 
         //afegim cap de la serp
         cap = new CapSerp(x, y);
@@ -420,27 +421,6 @@ public class Serp {
 
     public void setAfegirPart(int afegirPart) {
         this.afegirPart = afegirPart;
-    }
-
-    public void save()
-    {
-        FileHandle save = Gdx.files.local("saveFile");
-        Json json = new Json();
-
-        save.writeString(json.prettyPrint(cap), false);
-        save.writeString(json.prettyPrint(cos), true);
-
-        //save.writeString("Text afegit", false);
-    }
-
-    public void load()
-    {
-        FileHandle saveFile = Gdx.files.local("saveFile");
-        Json json = new Json();
-
-        cap = json.fromJson(CapSerp.class, saveFile.readString());
-        cos = json.fromJson(ArrayList.class, saveFile.readString());
-
     }
 
 }

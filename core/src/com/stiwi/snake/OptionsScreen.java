@@ -3,6 +3,7 @@ package com.stiwi.snake;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+
+import static com.badlogic.gdx.scenes.scene2d.ui.Table.Debug.actor;
 
 /**
  * Created by incar on 24/01/2017.
@@ -31,14 +34,14 @@ public class OptionsScreen implements Screen {
     private Stage stage;
 
     private Table table;
-    private TextButton btnBack;
+    private TextButton btnBack, btnVolUp, btnVolDw, btnSpdUp, btnSpdDw, btnSndUp, btnSndDw;
     private Label lblSpeed, lblSound, lblMusic;
-    private TextField txtSpeed;
     private CheckBox chkWallEnabled, chkSelfCollision;
     private Slider sldSpeed, sldSound, sldMusic;
     private Texture fonsMenu;
 
-    private float gameSpeed, sound, music;
+    //private int gameSpeed;
+    private float sound, music, gameSpeed;
     private boolean wallCollision, selfCollision;
 
     public OptionsScreen (final Snake game)
@@ -48,7 +51,8 @@ public class OptionsScreen implements Screen {
         //agafem preferencies
         preferences = Gdx.app.getPreferences("snakeprefs");
 
-        gameSpeed = preferences.getFloat("gameSpeed", 3);
+        gameSpeed = preferences.getInteger("gameSpeed", 2);
+        if (gameSpeed == 5) gameSpeed = 3; //en velocitats de 3 i 4, no funciona be :(
         sound = preferences.getFloat("sound", 8);
         music = preferences.getFloat("music", 8);
         wallCollision = preferences.getBoolean("wallCollision", true);
@@ -67,11 +71,6 @@ public class OptionsScreen implements Screen {
         table.align(Align.center);
         stage.addActor(table);
 
-        //Control de velocitat de moviment de la serp
-        lblSpeed = new Label("Speed Game", skin);
-        sldSpeed = new Slider(1, 5, 1, false, skin);
-        sldSpeed.setValue(gameSpeed);
-
         //colisions en parets
         chkWallEnabled = new CheckBox("Enable Wall Collision", skin);
         chkWallEnabled.setChecked(wallCollision);
@@ -79,18 +78,30 @@ public class OptionsScreen implements Screen {
         chkSelfCollision = new CheckBox("Enable Self Collision", skin);
         chkSelfCollision.setChecked(selfCollision);
 
+        //Control de velocitat de moviment de la serp
+        lblSpeed = new Label("Speed Game", skin);
+        sldSpeed = new Slider(1, 3, 1, false, skin);
+        sldSpeed.setValue(gameSpeed);
+
         //Control del so
         lblSound = new Label("Sound Volume", skin);
-        sldSound = new Slider(1, 10, 1, false, skin);
+        sldSound = new Slider(0, 10, 1, false, skin);
         sldSound.setValue(sound);
 
         //Control de la musica
         lblMusic = new Label("Music Volume", skin);
-        sldMusic = new Slider(1, 10, 1, false, skin);
+        sldMusic = new Slider(0, 10, 1, false, skin);
         sldMusic.setValue(music);
 
         //Boto per a tornar
         btnBack = new TextButton("Back", skin);
+        //botons de pujar i baixar
+        btnVolUp = new TextButton("+", skin);
+        btnVolDw = new TextButton("-", skin);
+        btnSndUp = new TextButton("+", skin);
+        btnSndDw = new TextButton("-", skin);
+        btnSpdUp = new TextButton("+", skin);
+        btnSpdDw = new TextButton("-", skin);
 
 
         sldSpeed.addListener(new ChangeListener() {
@@ -104,6 +115,7 @@ public class OptionsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 music = sldMusic.getValue();
+                game.music.setVolume(music / 10);
             }
         });
 
@@ -128,11 +140,83 @@ public class OptionsScreen implements Screen {
             }
         });
 
+        btnSpdUp.addListener(new ChangeListener(){
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (gameSpeed < 3) {
+                    gameSpeed += 1;
+                    sldSpeed.setValue(gameSpeed);
+                }
+            }
+        });
+
+        btnSpdDw.addListener(new ChangeListener(){
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (gameSpeed > 1) {
+                    gameSpeed -= 1;
+                    sldSpeed.setValue(gameSpeed);
+                }
+            }
+        });
+
+        btnSndUp.addListener(new ChangeListener(){
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (sound < 10)
+                {
+                    sound += 1;
+                    sldSound.setValue(sound);
+                }
+            }
+        });
+
+        btnSndDw.addListener(new ChangeListener(){
+
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (sound > 0)
+                {
+                    sound -= 1;
+                    sldSound.setValue(sound);
+                }
+            }
+        });
+
+        btnVolUp.addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                if (music < 10) {
+                    music += 1;
+                    sldMusic.setValue(music);
+                }
+            }
+        });
+
+        btnVolDw.addListener(new ChangeListener(){
+            @Override
+            public void changed(ChangeEvent event, Actor actor){
+                if (music > 0)
+                {
+                    music -= 1;
+                    sldMusic.setValue(music);
+                }
+
+            }
+        });
+
         btnBack.addListener(new ChangeListener(){
             @Override
             public void changed(ChangeEvent event, Actor actor){
 
-                preferences.putFloat("gameSpeed", gameSpeed);
+                //el cas de la velocitat es diferent (sols funciona per a 1, 2 i 5)
+                if (gameSpeed == 3)
+                    gameSpeed = 5;
+
+                preferences.putInteger("gameSpeed", (int)gameSpeed);
                 preferences.putFloat("music", music);
                 preferences.putFloat("sound", sound);
                 preferences.putBoolean("selfCollision", selfCollision);
@@ -145,25 +229,42 @@ public class OptionsScreen implements Screen {
             }
         });
 
-        table.add(lblSpeed);
+
+        table.add();
+            table.add(lblSpeed);
+            table.add();
         table.row();
-        table.add(sldSpeed).padRight(5f);
-        table.add(txtSpeed).width(20f);
+            table.add(btnSpdDw).width(50f);
+            table.add(sldSpeed).padRight(5f);
+            table.add(btnSpdUp).width(50f);
         table.row();
-        table.add(chkWallEnabled).padTop(40f).padBottom(20f);
+            table.add();
+            table.add(chkWallEnabled).padTop(40f).padBottom(20f);
+            table.add();
         table.row();
-        table.add(chkSelfCollision).padBottom(20f);
+            table.add();
+            table.add(chkSelfCollision).padBottom(20f);
+            table.add();
         table.row();
-        table.add(lblSound);
+            table.add();
+            table.add(lblSound);
+            table.add();
         table.row();
-        table.add(sldSound).padBottom(20f);
+            table.add(btnSndDw).width(50f);
+            table.add(sldSound).padBottom(20f);
+            table.add(btnSndUp).width(50f);
         table.row();
-        table.add(lblMusic);
+            table.add();
+            table.add(lblMusic);
+            table.add();
         table.row();
-        table.add(sldMusic).padBottom(40f);
+            table.add(btnVolDw).width(50f);
+            table.add(sldMusic).padBottom(20f);
+            table.add(btnVolUp).width(50f);
         table.row();
-        table.add(btnBack).width(200f).height(50f);
-        table.row();
+            table.add();
+            table.add(btnBack).width(200f).height(50f).padTop(40f);
+            table.add();
 
 
     }

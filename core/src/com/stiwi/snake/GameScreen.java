@@ -2,6 +2,7 @@ package com.stiwi.snake;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -49,6 +50,8 @@ public class GameScreen implements Screen {
     private ShapeRenderer shapeRenderer;
     private boolean loadGame;
 
+    private Preferences preferences;
+
     private final float buttonSize = 50f; //tamany del boto de pausa
 
     public GameScreen (final Snake game, boolean loadGame)
@@ -58,7 +61,10 @@ public class GameScreen implements Screen {
         this.game = game;
         this.loadGame = loadGame;
 
+        preferences = Gdx.app.getPreferences("snakeprefs");
+
         serp = new Serp(game.widthScreen/2, game.heightScreen/2);
+
         //asignem textura de la serp
         serpTexture = new Texture(Gdx.files.internal("snake_texture.png"));
         capSerpTexture = new Texture(Gdx.files.internal("capserp.png"));
@@ -72,6 +78,9 @@ public class GameScreen implements Screen {
         {
             loadGame();
         }
+
+        //despres de comprovar si carreguem partida, asignem velocitat de la serp
+        serp.setVelocitat(preferences.getInteger("gameSpeed", 3));
     }
 
     @Override
@@ -226,11 +235,13 @@ public class GameScreen implements Screen {
 
         //comestible
         game.batch.draw(comestibleTexture, comestible.getX(), comestible.getY());
-        /*game.font.draw(game.batch, "x: "+serp.getX(), 20, 20);
-        game.font.draw(game.batch, "y: "+serp.getY(), 100, 20);
-        game.font.draw(game.batch, "direccio: "+serp.getDireccio(), 20, 40);
-        game.font.draw(game.batch, "xt:"+Gdx.input.getX(), 20, 60);
-        game.font.draw(game.batch, "yt:"+Gdx.input.getY(), 100, 60);*/
+
+        //game.font.draw(game.batch, "x: "+serp.getX(), 20, 20);
+        //game.font.draw(game.batch, "y: "+serp.getY(), 100, 20);
+        //game.font.draw(game.batch, "direccio: "+serp.getDireccio(), 20, 40);
+        //game.font.draw(game.batch, "xt:"+Gdx.input.getX(), 20, 60);
+        //game.font.draw(game.batch, "yt:"+Gdx.input.getY(), 100, 60);
+        //game.font.draw(game.batch, "speed: "+serp.getVelocitat(), 20, 20);
         game.batch.end();
 
 
@@ -275,7 +286,6 @@ public class GameScreen implements Screen {
         Json json = new Json();
         FileHandle saveFile = Gdx.files.local("serp.save");
         serp = json.fromJson(Serp.class, saveFile.readString());
-
         saveFile = Gdx.files.local("comestible.save");
         comestible = json.fromJson(Comestible.class, saveFile.readString());
     }

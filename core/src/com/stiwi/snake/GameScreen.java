@@ -208,12 +208,13 @@ public class GameScreen implements Screen {
             serp.incrementaParts();
         }
 
-        //si la serp colisiona
-        if (serp.colisionaAmbEllaMateixa())
-        {
-            //game over
-            game.setScreen(new GameOverScreen(game));
-            dispose();
+        //si la serp colisiona si la opció de detecció de colisió està activada
+        if (preferences.getBoolean("selfCollision")) {
+            if (serp.colisionaAmbEllaMateixa()) {
+                //game over
+                game.setScreen(new GameOverScreen(game));
+                dispose();
+            }
         }
 
         //moguem la serp si no estem en pausa

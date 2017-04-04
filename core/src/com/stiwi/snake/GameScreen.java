@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -49,6 +50,7 @@ public class GameScreen implements Screen {
     private Texture fonsMenu, fons, serpTexture, capSerpTexture, cuaSerpTexture, comestibleTexture;
     private ShapeRenderer shapeRenderer;
     private boolean loadGame;
+
 
     private Preferences preferences;
 
@@ -202,6 +204,7 @@ public class GameScreen implements Screen {
         if (serp.colisiona(comestible))
         {
             setComestible();
+            game.pickSound.play(preferences.getFloat("sound", 8)/10);
             serp.incrementaParts();
         }
 

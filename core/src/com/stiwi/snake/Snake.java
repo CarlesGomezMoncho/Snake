@@ -5,6 +5,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -16,6 +17,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 public class Snake extends Game {
 	SpriteBatch batch;
 	Music music;
+	Sound pickSound;
+
 	Preferences preferences;
 
 	public BitmapFont font;
@@ -32,6 +35,9 @@ public class Snake extends Game {
 		music = Gdx.audio.newMusic(Gdx.files.internal("snake_m1.mp3"));
 		music.play();
 		music.setVolume(preferences.getFloat("music", 8)/10);
+		music.setLooping(true);
+
+		pickSound = Gdx.audio.newSound(Gdx.files.internal("pick.wav"));
 	}
 
 	@Override
@@ -44,6 +50,7 @@ public class Snake extends Game {
 		batch.dispose();
 		font.dispose();
 		music.dispose();
+		pickSound.dispose();
 	}
 
 	public int getWidthScreen()

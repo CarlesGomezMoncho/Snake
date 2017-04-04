@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -57,7 +58,6 @@ public class OptionsScreen implements Screen {
         music = preferences.getFloat("music", 8);
         wallCollision = preferences.getBoolean("wallCollision", true);
         selfCollision = preferences.getBoolean("selfCollision", true);
-
 
         fonsMenu =  new Texture(Gdx.files.internal("congruent_outline.png"));    //imatge de fons del menú
         fonsMenu.setWrap(Texture.TextureWrap.Repeat, Texture.TextureWrap.Repeat);   //posem la imatge com a patró
@@ -123,6 +123,7 @@ public class OptionsScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 sound = sldSound.getValue();
+                game.pickSound.play(sound/10);
             }
         });
 
@@ -234,9 +235,9 @@ public class OptionsScreen implements Screen {
             table.add(lblSpeed);
             table.add();
         table.row();
-            table.add(btnSpdDw).width(50f);
-            table.add(sldSpeed).padRight(5f);
-            table.add(btnSpdUp).width(50f);
+            table.add(btnSpdDw).width(80f).height(40f);
+            table.add(sldSpeed).padRight(5f).padTop(20f);
+            table.add(btnSpdUp).width(80f).height(40f);
         table.row();
             table.add();
             table.add(chkWallEnabled).padTop(40f).padBottom(20f);
@@ -250,17 +251,17 @@ public class OptionsScreen implements Screen {
             table.add(lblSound);
             table.add();
         table.row();
-            table.add(btnSndDw).width(50f);
-            table.add(sldSound).padBottom(20f);
-            table.add(btnSndUp).width(50f);
+            table.add(btnSndDw).width(80f).height(40f);
+            table.add(sldSound).padBottom(20f).padTop(20f);
+            table.add(btnSndUp).width(80f).height(40f);
         table.row();
             table.add();
             table.add(lblMusic);
             table.add();
         table.row();
-            table.add(btnVolDw).width(50f);
-            table.add(sldMusic).padBottom(20f);
-            table.add(btnVolUp).width(50f);
+            table.add(btnVolDw).width(80f).height(40f);
+            table.add(sldMusic).padBottom(20f).padTop(20f);
+            table.add(btnVolUp).width(80f).height(40f);
         table.row();
             table.add();
             table.add(btnBack).width(200f).height(50f).padTop(40f);
